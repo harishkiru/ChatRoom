@@ -17,102 +17,128 @@ import static com.example.webchatserver.utils.ResourceAPI.saveChatRoomHistory;
 @ServerEndpoint(value="/ws/{roomID}")
 public class ChatServer {
 
-    private Map<String, String> usernames = new HashMap<String, String>();
-    private static Map<String, String> roomList = new HashMap<String, String>();
     private static Map<String, String> roomHistoryList = new HashMap<String, String>();
+    private static Map<String, ChatRoom> chatRooms = new HashMap<>();
+
     @OnOpen
     public void open(@PathParam("roomID") String roomID, Session session) throws IOException, EncodeException {
-        roomList.put(session.getId(), roomID); // adding userID to a room
+        ChatRoom chatRoom;
+        if (chatRooms.containsKey(roomID)) {
+            chatRoom = chatRooms.get(roomID);
+        } else {
+            chatRoom = new ChatRoom(roomID, session.getId());
+            chatRooms.put(roomID, chatRoom);
+        }
+
         // loading the history chat
         String history = loadChatRoomHistory(roomID);
         System.out.println("Room joined ");
-        if (history!=null && !(history.isBlank())){
+        if (history != null && !(history.isBlank())) {
             System.out.println(history);
             history = history.replaceAll(System.lineSeparator(), "\\\n");
             System.out.println(history);
-            session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\""+history+" \\n Chat room history loaded\"}");
-            roomHistoryList.put(roomID, history+" \\n "+roomID + " room resumed.");
+            session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"" + history + " \\n Chat room history loaded\"}");
+            roomHistoryList.put(roomID, history + " \\n " + roomID + " room resumed.");
         }
-        if(!roomHistoryList.containsKey(roomID)) { // only if this room has no history yet
-            roomHistoryList.put(roomID, roomID + " room Created."); //initiating the room history
+        if (!roomHistoryList.containsKey(roomID)) { // only if this room has no history yet
+            roomHistoryList.put(roomID, roomID + " room Created."); // initiating the room history
         }
 
         session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server ): Welcome to the chat room. Please state your username to begin.\"}");
     }
 
+
     @OnClose
     public void close(Session session) throws IOException, EncodeException {
         String userId = session.getId();
-        if (usernames.containsKey(userId)) {
-            String username = usernames.get(userId);
-            String roomID = roomList.get(userId);
-            usernames.remove(userId);
-            // remove this user from the roomList
-            roomList.remove(roomID);
+        String roomID = null;
+        ChatRoom chatRoom = null;
+
+        for (Map.Entry<String, ChatRoom> entry : chatRooms.entrySet()) {
+            if (entry.getValue().inRoom(userId)) {
+                roomID = entry.getKey();
+                chatRoom = entry.getValue();
+                break;
+            }
+        }
+
+        if (chatRoom != null && roomID != null) {
+            String username = chatRoom.getUsers().get(userId);
+            chatRoom.removeUser(userId);
 
             // adding event to the history of the room
             String logHistory = roomHistoryList.get(roomID);
-            roomHistoryList.put(roomID, logHistory+" \\n " + username + " left the chat room.");
+            roomHistoryList.put(roomID, logHistory + " \\n " + username + " left the chat room.");
 
             // broadcasting it to peers in the same room
             int countPeers = 0;
-            for (Session peer : session.getOpenSessions()){ //broadcast this person left the server
-                if(roomList.get(peer.getId()).equals(roomID)) { // broadcast only to those in the same room
+            for (Session peer : session.getOpenSessions()) { // broadcast this person left the server
+                if (chatRooms.get(roomID).inRoom(peer.getId())) { // broadcast only to those in the same room
                     peer.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server): " + username + " left the chat room.\"}");
                     countPeers++; // count how many peers are left in the room
                 }
             }
 
             // if everyone in the room left, save history
-            if(!(countPeers >0)){
+            if (!(countPeers > 0)) {
                 saveChatRoomHistory(roomID, roomHistoryList.get(roomID));
             }
         }
     }
 
+
     @OnMessage
     public void handleMessage(String comm, Session session) throws IOException, EncodeException {
-        String userID = session.getId(); // my id
-        String roomID = roomList.get(userID); // my room
+        String userID = session.getId();
+        String roomID = null;
+        ChatRoom chatRoom = null;
+
+        for (Map.Entry<String, ChatRoom> entry : chatRooms.entrySet()) {
+            if (entry.getValue().inRoom(userID)) {
+                roomID = entry.getKey();
+                chatRoom = entry.getValue();
+                break;
+            }
+        }
+
+        if (chatRoom == null) {
+            return;
+        }
+
         JSONObject jsonmsg = new JSONObject(comm);
         String type = (String) jsonmsg.get("type");
         String message = (String) jsonmsg.get("msg");
 
-        if(usernames.containsKey(userID)){ // not their first message
-            String username = usernames.get(userID);
-            System.out.println(username);
+        if (chatRoom.getUsers().get(userID) != null && !chatRoom.getUsers().get(userID).isEmpty()) {
+            String username = chatRoom.getUsers().get(userID);
 
             // adding event to the history of the room
             String logHistory = roomHistoryList.get(roomID);
-            roomHistoryList.put(roomID, logHistory+" \\n " +"(" + username + "): " + message);
+            roomHistoryList.put(roomID, logHistory + " \\n " + "(" + username + "): " + message);
 
             // broadcasting it to peers in the same room
-            for(Session peer: session.getOpenSessions()){
+            for (Session peer : session.getOpenSessions()) {
                 // only send my messages to those in the same room
-                if(roomList.get(peer.getId()).equals(roomID)) {
+                if (chatRooms.get(roomID).inRoom(peer.getId())) {
                     peer.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(" + username + "): " + message + "\"}");
                 }
             }
-        }else{ //first message is their username
-            usernames.put(userID, message);
+        } else {
+            chatRoom.setUserName(userID, message);
             session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server ): Welcome, " + message + "!\"}");
 
             // adding event to the history of the room
             String logHistory = roomHistoryList.get(roomID);
-            roomHistoryList.put(roomID, logHistory+" \\n " + message + " joined the chat room.");
+            roomHistoryList.put(roomID, logHistory + " \\n " + message + " joined the chat room.");
 
             // broadcasting it to peers in the same room
-            for(Session peer: session.getOpenSessions()){
+            for (Session peer : session.getOpenSessions()) {
                 // only announce to those in the same room as me, excluding myself
-                if((!peer.getId().equals(userID)) && (roomList.get(peer.getId()).equals(roomID))){
+                if ((!peer.getId().equals(userID)) && (chatRooms.get(roomID).inRoom(peer.getId()))) {
                     peer.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server): " + message + " joined the chat room.\"}");
                 }
             }
         }
-
+        saveChatRoomHistory(roomID, roomHistoryList.get(roomID));
     }
-
-
-
-
 }

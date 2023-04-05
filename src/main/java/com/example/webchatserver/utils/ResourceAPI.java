@@ -12,7 +12,7 @@ public class ResourceAPI {
      * This method call the ChatResourceAPI to save the log history of a room
      * */
     public static void saveChatRoomHistory(String roomID, String log) throws IOException {
-        String uriAPI = "http://localhost:8080/ChatResourceAPI-1.0-SNAPSHOT/api/history/"+roomID;
+        String uriAPI = "http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/history/"+roomID;
         URL url = new URL(uriAPI);
         HttpURLConnection con = (HttpURLConnection)url.openConnection();
         con.setRequestMethod("POST");
@@ -51,7 +51,7 @@ public class ResourceAPI {
      * This method call the ChatResourceAPI to load the log history of a room
      * */
     public static String loadChatRoomHistory(String roomID) throws IOException {
-        String uriAPI = "http://localhost:8080/ChatResourceAPI-1.0-SNAPSHOT/api/history/"+roomID;
+        String uriAPI = "http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/history/"+roomID;
         URL url = new URL(uriAPI);
         HttpURLConnection con = (HttpURLConnection)url.openConnection();
         con.setRequestMethod("GET");

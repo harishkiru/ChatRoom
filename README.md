@@ -1,4 +1,4 @@
-# Assignment 02 - Web Chat Server (Instructions)
+`# Assignment 02 - Web Chat Server (Instructions)
 > Course: CSCI 2020U: Software Systems Development and Integration
 
 This is the template for your Assignment 02.
