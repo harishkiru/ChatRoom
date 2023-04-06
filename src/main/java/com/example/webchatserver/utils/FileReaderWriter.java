@@ -55,12 +55,16 @@ public class FileReaderWriter {
 
                 System.out.println(content);
 
+
                 return content;
+
 
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+
     }
 }

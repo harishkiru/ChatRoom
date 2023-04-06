@@ -86,7 +86,6 @@ public class ChatServer {
         }
     }
 
-
     @OnMessage
     public void handleMessage(String comm, Session session) throws IOException, EncodeException {
         String userID = session.getId();
@@ -110,6 +109,7 @@ public class ChatServer {
         String message = (String) jsonmsg.get("msg");
 
         if (chatRoom.getUsers().get(userID) != null && !chatRoom.getUsers().get(userID).isEmpty()) {
+            System.out.println("pls tell me you enter");
             String username = chatRoom.getUsers().get(userID);
 
             // adding event to the history of the room
