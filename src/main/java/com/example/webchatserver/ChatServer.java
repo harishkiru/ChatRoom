@@ -159,4 +159,14 @@ public class ChatServer {
         updateRoomHistory(roomID, message + " joined the chat room.");
         broadcastMessageToPeersInRoom(chatRoom, session, "(Server): " + message + " joined the chat room.");
     }
+
+    public static List<String> getCurrentUsers() {
+        List<String> users = new ArrayList<>();
+        for (ChatRoom chatRoom : chatRooms.values()) {
+            for (String user : chatRoom.getUsers().values()) {
+                users.add(user);
+            }
+        }
+        return users;
+    }
 }

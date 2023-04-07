@@ -13,14 +13,13 @@ public class ChatRoom {
     private String code;
 
     //each user has an unique ID associate to their ws session and their username
-    private  Map<String, String> users = new HashMap<String, String>() ;
-    private  List<String> activeChatRoom = new ArrayList<String>();
+    private  Map<String, String> users = new HashMap<String, String>();
 
     // when created the chat room has at least one user
     public ChatRoom(String code, String user){
         this.code = code;
-        this.users = new HashMap<String, String>();
-        this.activeChatRoom = new ArrayList<String>();
+        users.put(code, user);
+
 
         // When created, the user has not entered their username yet
         this.users.put(user, "");
@@ -68,15 +67,14 @@ public class ChatRoom {
         }
     }
 
-    public void addActiveChatRoom(String roomID) {
-        activeChatRoom.add(roomID);
+    //Get all the users in a chatroom
+    public List<String> getUsersInRoom() {
+        List<String> usersInRoom = new ArrayList<String>();
+        for (Map.Entry<String, String> entry : users.entrySet()) {
+            usersInRoom.add(entry.getValue());
+        }
+        return usersInRoom;
     }
 
-    public void removeActiveChatRoom(String roomID) {
-        activeChatRoom.remove(roomID);
-    }
 
-    public List<String> getActiveChatRoom() {
-        return activeChatRoom;
-    }
 }

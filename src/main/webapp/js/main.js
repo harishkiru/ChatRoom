@@ -46,10 +46,25 @@ function enterRoom() {
         console.log("WebSocket connection established");
 
         // Delay fetching active chat rooms by 1 second
-        setTimeout(() => {
+        setTimeout(async () => {
             const activeChatRoomsContainer = document.getElementById('activeChatRooms');
             const apiEndpoint = 'http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeRooms';
             fetchActiveChatRooms(apiEndpoint, activeChatRoomsContainer);
+            try {
+                const response = await fetch("http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeUsers");
+                const data = await response.text();
+                console.log(data);
+                //Remove first and last character (square brackets)
+                let users = document.getElementById("users");
+                for (let i = 0; i < data.length; i++) {
+                    let user = document.createElement("div");
+                    user.innerHTML = data[i];
+                    users.appendChild(user);
+                }
+            } catch (error) {
+                console.error('Error fetching active users:', error);
+            }
+
         }, 60);
     }
 }
