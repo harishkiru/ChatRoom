@@ -55,7 +55,8 @@ public class FileReaderWriter {
 
                 System.out.println(content);
 
-
+                input.close();
+                fileInput.close();
                 return content;
 
 

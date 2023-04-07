@@ -56,6 +56,10 @@ public class ChatRoom {
 
     }
 
+    public void addUser(String userID, String name){
+        users.put(userID, name);
+    }
+
     public boolean inRoom(String userID){
         return users.containsKey(userID);
     }
