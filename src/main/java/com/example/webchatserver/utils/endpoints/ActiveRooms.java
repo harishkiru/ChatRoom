@@ -1,6 +1,7 @@
 package com.example.webchatserver.utils.endpoints;
 
 import com.example.webchatserver.ChatRoom;
+import com.example.webchatserver.ChatServer;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -14,8 +15,7 @@ public class ActiveRooms {
     @Produces("application/json")
     public Response getActiveRooms() {
         //From the ChatRoom class, get the list of active rooms
-        ChatRoom chatRoom = new ChatRoom("admin", "admin");
-        String activeRooms = String.valueOf(chatRoom.getActiveChatRoom());
+        String activeRooms = ChatServer.activeChatRooms.toString();
         //build the json data for the response
         Response myResp = Response.status(200) // success
                 .header("Content-Type", "application/json")

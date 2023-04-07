@@ -13,14 +13,16 @@ public class ChatRoom {
     private String code;
 
     //each user has an unique ID associate to their ws session and their username
-    private static Map<String, String> users = new HashMap<String, String>() ;
-
-    private static List<String> activeChatRoom = new ArrayList<>();
+    private  Map<String, String> users = new HashMap<String, String>() ;
+    private  List<String> activeChatRoom = new ArrayList<String>();
 
     // when created the chat room has at least one user
     public ChatRoom(String code, String user){
         this.code = code;
-        // when created the user has not entered their username yet
+        this.users = new HashMap<String, String>();
+        this.activeChatRoom = new ArrayList<String>();
+
+        // When created, the user has not entered their username yet
         this.users.put(user, "");
     }
     public void setCode(String code) {

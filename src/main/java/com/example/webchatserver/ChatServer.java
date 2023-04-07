@@ -6,7 +6,9 @@ import jakarta.websocket.server.ServerEndpoint;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.webchatserver.utils.ResourceAPI.loadChatRoomHistory;
@@ -17,6 +19,8 @@ public class ChatServer {
 
     private static Map<String, String> roomHistoryList = new HashMap<String, String>();
     private static Map<String, ChatRoom> chatRooms = new HashMap<>();
+    public static List<String> activeChatRooms = new ArrayList<>(); // Moved to ChatServer
+
 
     @OnOpen
     public void open(@PathParam("roomID") String roomID, Session session) throws IOException, EncodeException {
@@ -46,7 +50,7 @@ public class ChatServer {
 
         session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server ): Welcome to the chat room. Please state your username to begin.\"}");
 
-        chatRoom.addActiveChatRoom(roomID);
+        activeChatRooms.add(roomID); // Update the activeChatRooms in ChatServer
     }
 
     private ChatRoom getOrCreateChatRoom(String roomID, Session session) {
@@ -77,23 +81,19 @@ public class ChatServer {
     private void leaveRoom(Session session) throws IOException, EncodeException {
         String userId = session.getId();
         ChatRoom chatRoom = findChatRoomByUserId(userId);
-        System.out.println(chatRoom + " TGHIS IS THE CHAT ROOM" + userId + " TGHIS IS THE USER ID");
 
         if (chatRoom != null) {
             String roomID = chatRoom.getRoomID();
-            System.out.println(roomID + " TGHIS IS THE CHAT ROOM ID");
             String username = chatRoom.getUsers().get(userId);
             chatRoom.removeUser(userId);
-            //Check if the room is empty
-            if(chatRoom.getActiveChatRoom().contains(roomID) && chatRoom.isEmpty()) {
-                chatRoom.removeActiveChatRoom(roomID);
-            }
-            updateRoomHistory(roomID, username + " left the chat room.");
-            broadcastMessageToPeersInRoom(chatRoom, session, "(Server): " + username + " left the chat room.");
 
             if (chatRoom.isEmpty()) {
                 saveChatRoomHistory(roomID, roomHistoryList.get(roomID));
+                activeChatRooms.remove(roomID); // Update the activeChatRooms in ChatServer
             }
+
+            updateRoomHistory(roomID, username + " left the chat room.");
+            broadcastMessageToPeersInRoom(chatRoom, session, "(Server): " + username + " left the chat room.");
         }
     }
 
