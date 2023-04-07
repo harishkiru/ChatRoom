@@ -77,12 +77,17 @@ public class ChatServer {
     private void leaveRoom(Session session) throws IOException, EncodeException {
         String userId = session.getId();
         ChatRoom chatRoom = findChatRoomByUserId(userId);
+        System.out.println(chatRoom + " TGHIS IS THE CHAT ROOM" + userId + " TGHIS IS THE USER ID");
 
         if (chatRoom != null) {
             String roomID = chatRoom.getRoomID();
+            System.out.println(roomID + " TGHIS IS THE CHAT ROOM ID");
             String username = chatRoom.getUsers().get(userId);
             chatRoom.removeUser(userId);
-            chatRoom.removeActiveChatRoom(roomID);
+            //Check if the room is empty
+            if(chatRoom.getActiveChatRoom().contains(roomID) && chatRoom.isEmpty()) {
+                chatRoom.removeActiveChatRoom(roomID);
+            }
             updateRoomHistory(roomID, username + " left the chat room.");
             broadcastMessageToPeersInRoom(chatRoom, session, "(Server): " + username + " left the chat room.");
 
@@ -95,6 +100,7 @@ public class ChatServer {
     private ChatRoom findChatRoomByUserId(String userId) {
         for (ChatRoom chatRoom : chatRooms.values()) {
             if (chatRoom.inRoom(userId)) {
+                System.out.println(chatRoom.getRoomID() + " TGHIS IS THE CHAT ROOM ID");
                 return chatRoom;
             }
         }
