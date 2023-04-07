@@ -84,7 +84,8 @@ public class History {
 
         try {
             // saving the chat log history to the roomID.json file in the resources folder
-            FileReaderWriter.saveNewFile(data, filename+".json", (String) result.get("log"));
+            //get("log")
+            FileReaderWriter.saveNewFile(data, filename+".json", (String) result.toString());
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

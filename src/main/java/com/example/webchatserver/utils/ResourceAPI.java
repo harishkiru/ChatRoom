@@ -39,7 +39,7 @@ public class ResourceAPI {
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
-            System.out.println(response.toString());
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -69,17 +69,17 @@ public class ResourceAPI {
         StringBuffer buffer = new StringBuffer();
         String line;
         while ((line = in.readLine()) != null) {
-            buffer.append(line);
+            //Add a new line to the end of the line
+            buffer.append(line + "\\n");
         }
         String jsonData = buffer.toString();
-
-        System.out.println("load the data");
-        System.out.println(jsonData);
 
         // transforming the string into objects using org.json library
         JSONObject data = new JSONObject(jsonData);
         Map<String, Object> mapData = data.toMap();
         String content = (String) mapData.get("log");
+
+        System.out.println(content + " OINK OINK");
 
         return content;
 
