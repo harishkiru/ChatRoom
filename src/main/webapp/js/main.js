@@ -26,34 +26,3 @@ function timestamp() {
 }
 
 
-window.onload = function showRooms() {
-    //Get all existing rooms and display them
-    let request = {"type":"rooms"};
-    ws.send(JSON.stringify(request));
-
-    ws.onmessage = function (event) {
-        console.log(event.data);
-        let message = JSON.parse(event.data);
-        document.getElementById("log").value += "[" + timestamp() + "] " + message.message + "\n";
-
-        //Display all existing rooms
-        let rooms = message.message;
-        for (let i = 0; i < rooms.length; i++) {
-            let room = rooms[i];
-            let roomDiv = document.createElement("div");
-            roomDiv.className = "room";
-            roomDiv.innerHTML = room;
-            document.getElementById("rooms").appendChild(roomDiv);
-        }
-
-        //Add click event to each room
-        let roomDivs = document.getElementsByClassName("room");
-        for (let i = 0; i < roomDivs.length; i++) {
-            let roomDiv = roomDivs[i];
-            roomDiv.addEventListener("click", function (event) {
-                let request = {"type":"join", "room":event.target.innerHTML};
-                ws.send(JSON.stringify(request));
-            });
-        }
-    }
-}

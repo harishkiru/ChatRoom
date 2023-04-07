@@ -10,10 +10,12 @@ import java.util.Map;
  * You may add more method or attributes as needed
  * **/
 public class ChatRoom {
-    private String  code;
+    private String code;
 
     //each user has an unique ID associate to their ws session and their username
-    private Map<String, String> users = new HashMap<String, String>() ;
+    private static Map<String, String> users = new HashMap<String, String>() ;
+
+    private static List<String> activeChatRoom = new ArrayList<>();
 
     // when created the chat room has at least one user
     public ChatRoom(String code, String user){
@@ -26,13 +28,22 @@ public class ChatRoom {
     }
 
     public String getRoomID() {
-        return code;
+        return this.code;
     }
 
     public Map<String, String> getUsers() {
         return users;
     }
 
+    public void addUser(String userID, String name){
+        users.put(userID, name);
+    }
+
+    public boolean inRoom(String userID){
+        return users.containsKey(userID);
+    }
+
+    public boolean isEmpty() { return users.isEmpty(); }
     /**
      * This method will add the new userID to the room if not exists, or it will add a new userID,name pair
      * **/
@@ -53,18 +64,17 @@ public class ChatRoom {
         if(users.containsKey(userID)){
             users.remove(userID);
         }
-
     }
 
-    public void addUser(String userID, String name){
-        users.put(userID, name);
+    public void addActiveChatRoom(String roomID) {
+        activeChatRoom.add(roomID);
     }
 
-    public boolean inRoom(String userID){
-        return users.containsKey(userID);
+    public void removeActiveChatRoom(String roomID) {
+        activeChatRoom.remove(roomID);
     }
 
-    public boolean isEmpty() {
-        return users.isEmpty();
+    public List<String> getActiveChatRoom() {
+        return activeChatRoom;
     }
 }

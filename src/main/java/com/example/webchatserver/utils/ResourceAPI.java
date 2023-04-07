@@ -23,7 +23,7 @@ public class ResourceAPI {
 
         // sending the data with the POST request
         String jsonInputString = "{\"room\":\""+roomID+"\",\"log\":\""+log+"\"}";
-        System.out.println(jsonInputString);
+        //System.out.println(jsonInputString);
         try(OutputStream os = con.getOutputStream()) {
             byte[] input = jsonInputString.getBytes("utf-8");
             os.write(input, 0, input.length);
@@ -79,7 +79,7 @@ public class ResourceAPI {
         Map<String, Object> mapData = data.toMap();
         String content = (String) mapData.get("log");
 
-        System.out.println(content + " OINK OINK");
+        //System.out.println(content + " OINK OINK");
 
         return content;
 

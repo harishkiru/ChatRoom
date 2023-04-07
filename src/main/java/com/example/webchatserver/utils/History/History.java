@@ -71,7 +71,7 @@ public class History {
     public Response saveRoomHistory(@PathParam("roomID") String roomID, String content) {
 
         // parse the consumed json data
-        System.out.println(content + "OOO OOO AAAH AAAH");
+        //System.out.println(content + "OOO OOO AAAH AAAH");
         JSONObject mapper = new JSONObject(content);
         Map<String,Object> result = mapper.toMap();
         String filename = (String) result.get("room");
@@ -83,7 +83,7 @@ public class History {
 
 
         File data = null;
-        System.out.println(file);
+        //System.out.println(file);
         data = new File(file);
 
         try {

@@ -21,7 +21,7 @@ public class FileReaderWriter {
             FileWriter fileWriter = new FileWriter(myFile);
             BufferedWriter output = new BufferedWriter(fileWriter);
             output.write(content);
-            System.out.println(content + " if this works imma cry fr");
+            //System.out.println(content + " if this works imma cry fr");
             output.close();
             fileWriter.close();
         } catch (IOException e) {
@@ -54,7 +54,7 @@ public class FileReaderWriter {
                 }
                 String content = buffer.toString();
 
-                System.out.println(content);
+                //System.out.println(content);
 
                 input.close();
                 fileInput.close();

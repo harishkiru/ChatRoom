@@ -45,6 +45,8 @@ public class ChatServer {
         }
 
         session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server ): Welcome to the chat room. Please state your username to begin.\"}");
+
+        chatRoom.addActiveChatRoom(roomID);
     }
 
     private ChatRoom getOrCreateChatRoom(String roomID, Session session) {
@@ -80,7 +82,7 @@ public class ChatServer {
             String roomID = chatRoom.getRoomID();
             String username = chatRoom.getUsers().get(userId);
             chatRoom.removeUser(userId);
-
+            chatRoom.removeActiveChatRoom(roomID);
             updateRoomHistory(roomID, username + " left the chat room.");
             broadcastMessageToPeersInRoom(chatRoom, session, "(Server): " + username + " left the chat room.");
 
