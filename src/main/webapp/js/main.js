@@ -29,7 +29,6 @@ function displayActiveChatRooms(chatRooms, activeChatRoomsContainer) {
 }
 
 function enterRoom() {
-    console.log("?????");
     let code = document.getElementById("code").value;
     console.log(code);
 
@@ -37,13 +36,14 @@ function enterRoom() {
     //Only open the chat window if the connection is successful
 
     ws.onmessage = function (event) {
-        console.log(event.data);
+        //console.log(event.data);
         let message = JSON.parse(event.data);
         document.getElementById("log").value += "[" + timestamp() + "] " + message.message + "\n";
     }
 
     ws.onopen = function () {
         console.log("WebSocket connection established");
+        console.log(code)
 
         // Delay fetching active chat rooms by 1 second
         setTimeout(async () => {
@@ -51,15 +51,16 @@ function enterRoom() {
             const apiEndpoint = 'http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeRooms';
             fetchActiveChatRooms(apiEndpoint, activeChatRoomsContainer);
             try {
-                const response = await fetch("http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeUsers");
+                const response = await fetch("http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeUsers/"+code);
                 const data = await response.text();
-                console.log(data);
+                //console.log(data);
                 //Remove first and last character (square brackets)
-                let users = document.getElementById("users");
+                let user = document.getElementById("small-rectangular-box")
                 for (let i = 0; i < data.length; i++) {
-                    let user = document.createElement("div");
+                    //Get the div for small-rectangular-box and add the data to it
                     user.innerHTML = data[i];
                     users.appendChild(user);
+
                 }
             } catch (error) {
                 console.error('Error fetching active users:', error);
@@ -100,7 +101,7 @@ window.onLoad = function getRooms() {
     fetch("http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeRooms")
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            //console.log(data);
             let rooms = document.getElementById("rooms");
             for (let i = 0; i < data.length; i++) {
                 let room = document.createElement("div");

@@ -160,13 +160,13 @@ public class ChatServer {
         broadcastMessageToPeersInRoom(chatRoom, session, "(Server): " + message + " joined the chat room.");
     }
 
-    public static List<String> getCurrentUsers() {
-        List<String> users = new ArrayList<>();
-        for (ChatRoom chatRoom : chatRooms.values()) {
-            for (String user : chatRoom.getUsers().values()) {
-                users.add(user);
-            }
+    //Function to get the usernames of the users in a chatroom
+    public static List<String> getUsernames(String roomID) {
+        List<String> usernames = new ArrayList<>();
+        ChatRoom chatRoom = chatRooms.get(roomID);
+        for (String userID : chatRoom.getUsers().keySet()) {
+            usernames.add(chatRoom.getUsers().get(userID));
         }
-        return users;
+        return usernames;
     }
 }
