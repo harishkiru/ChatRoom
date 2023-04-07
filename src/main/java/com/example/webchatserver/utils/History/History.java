@@ -27,7 +27,9 @@ public class History {
          TODO: read contents from the roomID.json file and return it
          loading the resource directory
         */
-        String path = "/Users/harish/Documents/CSCI2020U/Assignment2/kirubaharan-ali-patel-csci2020u-assignment02/src/main/resources/chatHistory";
+        String path = "E:\\Desktop\\Assignment2\\kirubaharan-ali-patel-csci2020u-assignment02\\src\\main\\resources\\chatHistory";
+        //String path = "C:\\Users\\Haide\\SoftwareDev\\assignment02\\kirubaharan-ali-patel-csci2020u-assignment02\\src\\main\\resources\\chatHistory";
+        //String path = "/Users/harish/Documents/CSCI2020U/Assignment2/kirubaharan-ali-patel-csci2020u-assignment02/src/main/resources/chatHistory";
         String history = "";
         File mainDir = null;
 
@@ -75,7 +77,9 @@ public class History {
         String filename = (String) result.get("room");
 
         // loading the resource directory
-        String file = "/Users/harish/Documents/CSCI2020U/Assignment2/kirubaharan-ali-patel-csci2020u-assignment02/src/main/resources/chatHistory";
+        //String file = "/Users/harish/Documents/CSCI2020U/Assignment2/kirubaharan-ali-patel-csci2020u-assignment02/src/main/resources/chatHistory";
+        String file = "E:\\Desktop\\Assignment2\\kirubaharan-ali-patel-csci2020u-assignment02\\src\\main\\resources\\chatHistory";
+        //String file = "C:\\Users\\Haide\\SoftwareDev\\assignment02\\kirubaharan-ali-patel-csci2020u-assignment02\\src\\main\\resources\\chatHistory";
 
 
         File data = null;
@@ -85,7 +89,7 @@ public class History {
         try {
             // saving the chat log history to the roomID.json file in the resources folder
             //get("log")
-            FileReaderWriter.saveNewFile(data, filename+".json", (String) result.toString());
+            FileReaderWriter.saveNewFile(data, filename+".json", (String) result.get("log"));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

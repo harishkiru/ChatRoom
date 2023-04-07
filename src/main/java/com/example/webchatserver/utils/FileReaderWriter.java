@@ -23,6 +23,7 @@ public class FileReaderWriter {
             output.write(content);
             System.out.println(content + " if this works imma cry fr");
             output.close();
+            fileWriter.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

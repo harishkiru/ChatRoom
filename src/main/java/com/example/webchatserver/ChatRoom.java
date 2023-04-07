@@ -25,7 +25,7 @@ public class ChatRoom {
         this.code = code;
     }
 
-    public String getCode() {
+    public String getRoomID() {
         return code;
     }
 
@@ -62,5 +62,9 @@ public class ChatRoom {
 
     public boolean inRoom(String userID){
         return users.containsKey(userID);
+    }
+
+    public boolean isEmpty() {
+        return users.isEmpty();
     }
 }
