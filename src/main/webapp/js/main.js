@@ -45,10 +45,12 @@ async function enterRoom() {
         let message = JSON.parse(event.data);
         console.log("Message received: " + message.type);
 
-        if (message.type === "userJoin") {
+        if (message.type === "userJoin" || message.type === "userLeave") {
             updateActiveUsersList(code);
+            updateActiveRoomsList();
         } else if (message.type === "roomEmpty") {
             // Handle roomEmpty event by updating the list of active chat rooms
+
             await fetchActiveChatRooms(apiEndpoint, activeChatRoomsContainer);
         } else {
             document.getElementById("log").value += "[" + timestamp() + "] " + message.message + "\n";
@@ -88,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const apiEndpoint = 'http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeRooms';
 
     fetchActiveChatRooms(apiEndpoint, activeChatRoomsContainer);
-
+    updateActiveRoomsList();
 
 });
 
@@ -110,20 +112,6 @@ function timestamp() {
     return d.getHours() + ':' + minutes;
 }
 
-window.onLoad = function getRooms() {
-    fetch("http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeRooms")
-        .then(response => response.json())
-        .then(data => {
-            //console.log(data);
-            let rooms = document.getElementById("rooms");
-            for (let i = 0; i < data.length; i++) {
-                let room = document.createElement("div");
-                room.innerHTML = data[i];
-                rooms.appendChild(room);
-            }
-        })
-        .catch(error => console.log(error));
-}
 
 function addUserToActiveUsersList(username) {
     setTimeout(async () => {
@@ -139,3 +127,14 @@ function addUserToActiveUsersList(username) {
 
     } , 500);
 }
+
+async function updateActiveRoomsList() {
+    try {
+        const apiEndpoint = 'http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeRooms';
+        const activeChatRoomsContainer = document.getElementById('activeChatRooms');
+        await fetchActiveChatRooms(apiEndpoint, activeChatRoomsContainer);
+    } catch (error) {
+        console.error('Error updating active rooms list:', error);
+    }
+}
+
