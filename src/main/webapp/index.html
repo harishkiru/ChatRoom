@@ -8,14 +8,17 @@
 <body>
 <img/>
 <div class="firstAbsolute">
-<div id="activeChatRooms"></div>
-<div id="users"></div>
-<div id="room">
-    <h1 class="JCR" >Join a Chat Room</h1>
-    <input class="moveToRight"  type="text" id="code" placeholder="Enter Room Code"/>
-    <button class="JoinButton"   id="btRoom" onclick="enterRoom()">Join</button>
+    <div id="activeChatRooms">
+        <!-- Other elements inside the activeChatRooms div -->
+        <button id="reloadButton">Reload Chatrooms</button>
+    </div>
 
-</div>
+    <div id="users"></div>
+    <div id="room">
+        <h1 class="JCR" >Join a Chat Room</h1>
+        <input class="moveToRight" type="text" id="code" placeholder="Enter Room Code"/>
+        <button class="JoinButton" id="btRoom" onclick="enterRoom()">Join</button>
+    </div>
 </div>
 <div id="chatDiv" class="absolute">
     <div id="userBox" class="small-rectangular-box"></div>

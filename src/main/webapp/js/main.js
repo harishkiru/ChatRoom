@@ -138,3 +138,7 @@ async function updateActiveRoomsList() {
     }
 }
 
+function reloadRooms() {
+    updateActiveRoomsList();
+}
+
