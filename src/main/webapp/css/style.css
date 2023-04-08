@@ -40,25 +40,25 @@ img {
     max-width: 500px;
     position: absolute;
     left: 50px;
-    top: 50px;
+    top: 150px;
 }
 .JCR{
     font-size: 32px;
     color: #C197d2;
     position: absolute;
     left: 90px;
-    top: 90px;
+    top: 20px;
 
 }
 .moveToRight{
     position: absolute;
     left:80px;
-    top: 150px;
+    top: 90px;
 }
 .JoinButton{
     position: absolute;
     right:45px;
-    top: 150px;
+    top: 90px;
 }
 
 .EnterRoom{
@@ -171,6 +171,7 @@ img {
     width: 150px;
     height: 100px;
     background-color: #613659;
+    color: white;
     margin-left: 10px;
     border-radius: 5px;
     position: absolute; /* Add this line */
