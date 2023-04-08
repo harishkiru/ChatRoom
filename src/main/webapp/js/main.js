@@ -29,9 +29,9 @@ function displayActiveChatRooms(chatRooms, activeChatRoomsContainer) {
 
 
 function addChatRoomToActiveChatRoomsList(room, ulElement) {
-    const li = document.createElement('li');
-    li.textContent = room;
-    ulElement.appendChild(li);
+    const ul = document.createElement('ul');
+    ul.textContent = room;
+    ulElement.appendChild(ul);
 }
 
 

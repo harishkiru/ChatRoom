@@ -1,20 +1,21 @@
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
     background-color: #211522;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
     margin: 0;
-
 }
+
 img {
     background-image: url("bg.png");
     background-repeat: no-repeat;
     background-size: cover;
     filter: blur(100px);
     -webkit-filter: blur(100px);
-rgba(0, 0, 0, 1);
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -23,8 +24,6 @@ rgba(0, 0, 0, 1);
     left: 0;
     z-index: -2;
 }
-
-
 
 #activeChatRooms {
     display: flex;
@@ -42,28 +41,25 @@ rgba(0, 0, 0, 1);
     left: 50px;
     top: 150px;
 }
-.JCR{
+
+.JCR {
     font-size: 32px;
     color: #C197d2;
     position: absolute;
     left: 90px;
     top: 20px;
+}
 
-}
-.moveToRight{
+.moveToRight {
     position: absolute;
-    left:80px;
-    top: 90px;
-}
-.JoinButton{
-    position: absolute;
-    right:45px;
+    left: 80px;
     top: 90px;
 }
 
-.EnterRoom{
-    position: relative;
-    top: 150px;
+.JoinButton {
+    position: absolute;
+    right: 45px;
+    top: 90px;
 }
 
 #room {
@@ -88,8 +84,6 @@ rgba(0, 0, 0, 1);
     outline: none;
 }
 
-
-
 #room button {
     background-color: #C197d2;
     color: white;
@@ -102,20 +96,7 @@ rgba(0, 0, 0, 1);
 }
 
 #room button:hover {
-    background-color: #C197d2;
-}
-
-#chatbox {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    width: 100%;
-    max-width: 500px;
-    height: 100%;
-    max-height: 600px;
+    background-color: #a583ad;
 }
 
 #log {
@@ -129,8 +110,8 @@ rgba(0, 0, 0, 1);
     overflow: auto;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     scrollbar-width: thin;
-    position : absolute;
-    top : 0px;
+    position: absolute;
+    top: 0px;
 }
 
 #log::-webkit-scrollbar {
@@ -156,15 +137,9 @@ rgba(0, 0, 0, 1);
     max-width: 900px;
     outline: none;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    position:absolute;
-    top : 600px;
+    position: absolute;
+    top: 600px;
     left: 0px;
-
-}
-
-#chatbox > div {
-    display: flex;
-    align-items: center;
 }
 
 .small-rectangular-box {
@@ -174,10 +149,10 @@ rgba(0, 0, 0, 1);
     color: white;
     margin-left: 10px;
     border-radius: 5px;
-    position: absolute; /* Add this line */
+    position: absolute;
     top: 0px;
-    right : 0px;
-    z-index: 1/* Adjust this value to move the box further down */
+    right: 0px;
+    z-index: 1;
 }
 
 #input:focus {
@@ -188,13 +163,6 @@ rgba(0, 0, 0, 1);
     color: #ccc;
 }
 
-div.absolute {
-    position: absolute;
-    top: 10px;
-    left: 0px;
-    width: 900px;
-    height: 800px;
-}
 #input::-moz-placeholder {
     color: #ccc;
 }
@@ -207,20 +175,21 @@ div.absolute {
     color: #ccc;
 }
 
-div.absolute {
-    position: absolute;
-    top: 10px;
-    left: 0px;
-    width: 900px;
-    height: 800px;
-}
-div.firstAbsolute {
-    position: absolute;
-    top: 10px;
-    left: 900px;
-    width: 450px;
-    height: 300px;
-}
+/*div.absolute {*/
+/*    position: absolute;*/
+/*    top: 10px;*/
+/*    left: 0px;*/
+/*    width: 900px;*/
+/*    height: 800px;*/
+/*}*/
+
+/*div.firstAbsolute {*/
+/*    position: absolute;*/
+/*    top: 10px;*/
+/*    left: 900px;*/
+/*    width: 450px;*/
+/*    height: 300px;*/
+/*}*/
 
 #reloadButton {
     background-color: #C197d2;
@@ -231,9 +200,67 @@ div.firstAbsolute {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 10px; /* Add some margin to separate the button from the chat room list */
+    margin-top: 10px;
 }
 
 #reloadButton:hover {
     background-color: #a583ad;
 }
+
+/* Add the following lines to the existing CSS */
+
+/* Navigation Bar */
+#navbar {
+    background-color: #211522;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+}
+
+#navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+#navbar ul li {
+    margin-right: 20px;
+}
+
+#navbar ul li a {
+    color: #d3b1c2;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+#navbar ul li a:hover {
+    color: #C197d2;
+}
+
+/* Adjust other elements to fit with the new navbar */
+div.absolute {
+    position: absolute;
+    top: 70px; /* Adjust the top value to accommodate the navbar */
+    left: 0px;
+    width: 900px;
+    height: 800px;
+}
+
+div.firstAbsolute {
+    position: absolute;
+    top: 70px; /* Adjust the top value to accommodate the navbar */
+    left: 900px;
+    width: 450px;
+    height: 300px;
+}
+
