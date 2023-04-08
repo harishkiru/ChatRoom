@@ -6,19 +6,24 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<img/>
+<div class="firstAbsolute">
 <div id="activeChatRooms"></div>
 <div id="users"></div>
 <div id="room">
     <h1 class="JCR" >Join a Chat Room</h1>
     <input class="moveToRight"  type="text" id="code" placeholder="Enter Room Code"/>
-    <button class="moveToRight" class="container"  id="btRoom" onclick="enterRoom()">Join</button>
+    <button class="JoinButton"   id="btRoom" onclick="enterRoom()">Join</button>
 
 </div>
-<div id="chatDiv">
+</div>
+<div id="chatDiv" class="absolute">
     <div class="small-rectangular-box"></div>
     <textarea title="Chat Log" id="log" readonly></textarea>
     <input title="Chat Input" id="input" type="text" placeholder="Type your message here...">
 </div>
+
 <script src="js/main.js"></script>
+
 </body>
 </html>
