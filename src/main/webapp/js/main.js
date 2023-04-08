@@ -128,9 +128,14 @@ window.onLoad = function getRooms() {
 function addUserToActiveUsersList(username) {
     setTimeout(async () => {
         console.log(username + " added");
-        const activeUsersContainer = document.querySelector('.small-rectangular-box');
-        const userElement = document.createElement('div');
-        userElement.textContent = username;
-        activeUsersContainer.appendChild(userElement);
+        if(username === "Arial") {
+            console.log("Arial is not a user");
+        } else {
+            const activeUsersContainer = document.querySelector('.small-rectangular-box');
+            const userElement = document.createElement('div');
+            userElement.textContent = username;
+            activeUsersContainer.appendChild(userElement);
+        }
+
     } , 500);
 }
