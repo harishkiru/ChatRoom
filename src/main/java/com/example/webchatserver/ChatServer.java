@@ -14,7 +14,7 @@ import java.util.Map;
 import static com.example.webchatserver.utils.ResourceAPI.loadChatRoomHistory;
 import static com.example.webchatserver.utils.ResourceAPI.saveChatRoomHistory;
 
-@ServerEndpoint(value="/ws/{roomID}")
+@ServerEndpoint(value="/ws/{roomName}")
 public class ChatServer {
 
     private static Map<String, String> roomHistoryList = new HashMap<String, String>();
@@ -22,8 +22,8 @@ public class ChatServer {
     public static List<String> activeChatRooms = new ArrayList<>();
 
     @OnOpen
-    public void open(@PathParam("roomID") String roomID, Session session) throws IOException, EncodeException {
-        joinRoom(roomID, session);
+    public void open(@PathParam("roomName") String roomName, Session session) throws IOException, EncodeException {
+        joinRoom(roomName, session);
     }
 
     @OnClose
@@ -36,47 +36,58 @@ public class ChatServer {
         handleUserMessage(comm, session);
     }
 
-    private void joinRoom(String roomID, Session session) throws IOException, EncodeException {
-        ChatRoom chatRoom = getOrCreateChatRoom(roomID, session);
+    private void joinRoom(String roomName, Session session) throws IOException, EncodeException {
+        ChatRoom chatRoom = getOrCreateChatRoom(roomName, session);
         addUserToChatRoom(chatRoom, session);
 
-        String history = loadChatRoomHistory(roomID);
-        sendChatHistory(history, session, roomID);
+        String history = loadChatRoomHistory(roomName);
+        sendChatHistory(history, session, roomName);
 
-        if (!roomHistoryList.containsKey(roomID)) {
-            roomHistoryList.put(roomID, "\\n" + roomID + " room Created.~S~");
+        if (!roomHistoryList.containsKey(roomName)) {
+            roomHistoryList.put(roomName, "\\n" + roomName + " room Created.~S~");
         }
 
         session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server ): Welcome to the chat room. Please state your username to begin.\"}");
 
-        if (!activeChatRooms.contains(roomID)) {
-            activeChatRooms.add(roomID);
+        if (!activeChatRooms.contains(roomName)) {
+            activeChatRooms.add(roomName);
         }
     }
 
+    private String generateUniqueroomName() {
+        return ChatServlet.generatingRandomUpperAlphanumericString(5);
+    }
 
-    private ChatRoom getOrCreateChatRoom(String roomID, Session session) {
-        ChatRoom chatRoom;
-        if (chatRooms.containsKey(roomID)) {
-            chatRoom = chatRooms.get(roomID);
-        } else {
-            chatRoom = new ChatRoom(roomID, session.getId(), session);
-            chatRooms.put(roomID, chatRoom);
+
+    private ChatRoom getOrCreateChatRoom(String roomName, Session session) {
+        ChatRoom chatRoom = null;
+        for (ChatRoom existingChatRoom : chatRooms.values()) {
+            if (existingChatRoom.getRoomName().equals(roomName)) {
+                chatRoom = existingChatRoom;
+                break;
+            }
+        }
+
+        if (chatRoom == null) {
+            chatRoom = new ChatRoom(roomName, session.getId(), session);
+            chatRoom.setRoomID(generateUniqueroomName());
+            chatRooms.put(chatRoom.getRoomID(), chatRoom);
         }
         return chatRoom;
     }
+
 
     private void addUserToChatRoom(ChatRoom chatRoom, Session session) {
         chatRoom.addUser(session.getId(), "", session);
     }
 
-    private void sendChatHistory(String history, Session session, String roomID) throws IOException, EncodeException {
+    private void sendChatHistory(String history, Session session, String roomName) throws IOException, EncodeException {
         if (history != null && !(history.isBlank())) {
             String arr[] = history.split("~S~");
             for (String message : arr) {
                 session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"" + message + "\"}");
             }
-            roomHistoryList.put(roomID, history + " \\n " + roomID + " room resumed.~S~");
+            roomHistoryList.put(roomName, history + " \\n " + roomName + " room resumed.~S~");
         }
     }
 
@@ -85,27 +96,24 @@ public class ChatServer {
         ChatRoom chatRoom = findChatRoomByUserId(userId);
 
         if (chatRoom != null) {
-            String roomID = chatRoom.getRoomID();
+            String roomName = chatRoom.getRoomName();
             String username = chatRoom.getUsers().get(userId);
             chatRoom.removeUser(userId);
 
-
-            System.out.println(chatRoom.isEmpty() + " EMPTY");
-            System.out.println(chatRoom.getSessions().size() + " SIZE");
-            System.out.println(chatRoom.getUsers().size() + " USERS");
-            System.out.println(chatRoom.getUsers().get(userId) + " USERNAME");
             if (chatRoom.isEmpty()) {
-                saveChatRoomHistory(roomID, roomHistoryList.get(roomID));
-                activeChatRooms.remove(roomID);
+                saveChatRoomHistory(roomName, roomHistoryList.get(roomName));
+                activeChatRooms.remove(roomName);
+                chatRooms.remove(chatRoom.getRoomID()); // Remove the chat room from the map
             }
 
-            updateRoomHistory(roomID, username + " left the chat room.");
-            broadcastMessageToPeersInRoom(chatRoom, session, "(Server): " + username + " left the chat room.");
+            updateRoomHistory(roomName, username + " left the chat room.");
+            goodbyeBroadcast(chatRoom, session, "(Server): " + username + " left the chat room.");
 
             // Remove the session from the chat room
             chatRoom.getSessions().remove(session);
         }
     }
+
 
     private ChatRoom findChatRoomByUserId(String userId) {
         for (ChatRoom chatRoom : chatRooms.values()) {
@@ -116,9 +124,9 @@ public class ChatServer {
         return null;
     }
 
-    private void updateRoomHistory(String roomID, String message) {
-        String logHistory = roomHistoryList.get(roomID);
-        roomHistoryList.put(roomID, logHistory + "\\n" + message);
+    private void updateRoomHistory(String roomName, String message) {
+        String logHistory = roomHistoryList.get(roomName);
+        roomHistoryList.put(roomName, logHistory + "\\n" + message);
     }
 
     private void broadcastMessageToPeersInRoom(ChatRoom chatRoom, Session session, String message) throws IOException, EncodeException {
@@ -133,6 +141,14 @@ public class ChatServer {
         for (Session peer : session.getOpenSessions()) {
             if (chatRoom.inRoom(peer.getId())) {
                 peer.getBasicRemote().sendText("{\"type\": \"userJoin\", \"message\":\"" + message + "\"}");
+            }
+        }
+    }
+
+    private void goodbyeBroadcast(ChatRoom chatRoom, Session session, String message) throws IOException, EncodeException {
+        for (Session peer : session.getOpenSessions()) {
+            if (chatRoom.inRoom(peer.getId())) {
+                peer.getBasicRemote().sendText("{\"type\": \"userLeave\", \"message\":\"" + message + "\"}");
             }
         }
     }
@@ -155,15 +171,15 @@ public class ChatServer {
             handleUsernameMessage(chatRoom, session, userID, message);
         }
 
-        String roomID = chatRoom.getRoomID();
-        saveChatRoomHistory(roomID, roomHistoryList.get(roomID));
+        String roomName = chatRoom.getRoomName();
+        saveChatRoomHistory(roomName, roomHistoryList.get(roomName));
     }
 
     private void handleChatMessage(ChatRoom chatRoom, Session session, String userID, String message) throws IOException, EncodeException {
-        String roomID = chatRoom.getRoomID();
+        String roomName = chatRoom.getRoomName();
         String username = chatRoom.getUsers().get(userID);
 
-        updateRoomHistory(roomID, "(" + username + "): " + message + "~S~");
+        updateRoomHistory(roomName, "(" + username + "): " + message + "~S~");
         broadcastMessageToPeersInRoom(chatRoom, session, "(" + username + "): " + message);
     }
 
@@ -172,23 +188,33 @@ public class ChatServer {
 
         session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server ): Welcome, " + message + "!\"}");
 
-        String roomID = chatRoom.getRoomID();
-        updateRoomHistory(roomID, message + " joined the chat room.");
+        String roomName = chatRoom.getRoomName();
+        updateRoomHistory(roomName, message + " joined the chat room.");
         welcomeBroadcast(chatRoom, session, "(Server): " + message + " joined the chat room.");
     }
 
     //Function to get the usernames of the users in a chatroom
-    public static List<String> getUsernames(String roomID) {
+    public static List<String> getUsernames(String roomName) {
         List<String> usernames = new ArrayList<>();
-        ChatRoom chatRoom = chatRooms.get(roomID);
-        for (String userID : chatRoom.getUsers().keySet()) {
-            // Don't put UUID in the list
-            if (chatRoom.getUsers().get(userID).length() > 25) {
-                continue;
+        ChatRoom targetChatRoom = null;
+        for (ChatRoom chatRoom : chatRooms.values()) {
+            if (chatRoom.getRoomName().equals(roomName)) {
+                targetChatRoom = chatRoom;
+                break;
             }
-            usernames.add(chatRoom.getUsers().get(userID));
-            System.out.println(chatRoom.getUsers().get(userID) + " THIS IS THE USERNAME" + chatRoom.getUsers().keySet() + " THIS IS THE KEYSET");
+        }
+
+        if (targetChatRoom != null) {
+            for (String userID : targetChatRoom.getUsers().keySet()) {
+                // Don't put UUID in the list
+                if (targetChatRoom.getUsers().get(userID).length() > 25) {
+                    continue;
+                }
+                usernames.add(targetChatRoom.getUsers().get(userID));
+                System.out.println(targetChatRoom.getUsers().get(userID) + " THIS IS THE USERNAME" + targetChatRoom.getUsers().keySet() + " THIS IS THE KEYSET");
+            }
         }
         return usernames;
     }
+
 }

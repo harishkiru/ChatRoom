@@ -23,7 +23,7 @@ public class ChatServlet extends HttpServlet {
     /**
      * Method generates unique room codes
      * **/
-    public String generatingRandomUpperAlphanumericString(int length) {
+    public static String generatingRandomUpperAlphanumericString(int length) {
         String generatedString = RandomStringUtils.randomAlphanumeric(length).toUpperCase();
         // generating unique room code
         while (rooms.contains(generatedString)){
