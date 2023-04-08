@@ -87,15 +87,20 @@ public class ChatServer {
             String username = chatRoom.getUsers().get(userId);
             chatRoom.removeUser(userId);
 
+
+            System.out.println(chatRoom.isEmpty() + " EMPTY LOL" + chatRoom.getUsers() + " USERS");
             if (chatRoom.isEmpty()) {
                 saveChatRoomHistory(roomID, roomHistoryList.get(roomID));
-                activeChatRooms.remove(roomID); // Update the activeChatRooms in ChatServer
+                //remove the roomID from the activeChatRooms list
+                activeChatRooms.remove(roomID);
+                System.out.println(activeChatRooms + " ACTIVE CHAT ROOMS");
             }
 
             updateRoomHistory(roomID, username + " left the chat room.");
             broadcastMessageToPeersInRoom(chatRoom, session, "(Server): " + username + " left the chat room.");
         }
     }
+
 
     private ChatRoom findChatRoomByUserId(String userId) {
         for (ChatRoom chatRoom : chatRooms.values()) {
@@ -116,6 +121,14 @@ public class ChatServer {
         for (Session peer : session.getOpenSessions()) {
             if (chatRoom.inRoom(peer.getId())) {
                 peer.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"" + message + "\"}");
+            }
+        }
+    }
+
+    private void welcomeBroadcast(ChatRoom chatRoom, Session session, String message) throws IOException, EncodeException {
+        for (Session peer : session.getOpenSessions()) {
+            if (chatRoom.inRoom(peer.getId())) {
+                peer.getBasicRemote().sendText("{\"type\": \"userJoin\", \"message\":\"" + message + "\"}");
             }
         }
     }
@@ -157,7 +170,7 @@ public class ChatServer {
 
         String roomID = chatRoom.getRoomID();
         updateRoomHistory(roomID, message + " joined the chat room.");
-        broadcastMessageToPeersInRoom(chatRoom, session, "(Server): " + message + " joined the chat room.");
+        welcomeBroadcast(chatRoom, session, "(Server): " + message + " joined the chat room.");
     }
 
     //Function to get the usernames of the users in a chatroom
@@ -165,7 +178,12 @@ public class ChatServer {
         List<String> usernames = new ArrayList<>();
         ChatRoom chatRoom = chatRooms.get(roomID);
         for (String userID : chatRoom.getUsers().keySet()) {
+            //Dont put UUID in the list
+            if (chatRoom.getUsers().get(userID).length() > 25) {
+                continue;
+            }
             usernames.add(chatRoom.getUsers().get(userID));
+            System.out.println(chatRoom.getUsers().get(userID) + " THIS IS THE USERNAME");
         }
         return usernames;
     }

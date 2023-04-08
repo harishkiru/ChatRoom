@@ -28,47 +28,53 @@ function displayActiveChatRooms(chatRooms, activeChatRoomsContainer) {
     }
 }
 
-function enterRoom() {
+async function enterRoom() {
     let code = document.getElementById("code").value;
     console.log(code);
 
-    ws = new WebSocket("ws://localhost:8080/WSChatServer-1.0-SNAPSHOT/ws/"+code);
-    //Only open the chat window if the connection is successful
+    ws = new WebSocket("ws://localhost:8080/WSChatServer-1.0-SNAPSHOT/ws/" + code);
 
-    ws.onmessage = function (event) {
-        //console.log(event.data);
+    ws.onmessage = async function (event) {
         let message = JSON.parse(event.data);
-        document.getElementById("log").value += "[" + timestamp() + "] " + message.message + "\n";
-    }
+        console.log("Message received: " + message.type);
 
-    ws.onopen = function () {
+        if (message.type === "userJoin") {
+            updateActiveUsersList(code);
+        }  else if (message.type === "roomEmpty") {
+            // Handle roomEmpty event by updating the list of active chat rooms
+            await fetchActiveChatRooms(apiEndpoint, activeChatRoomsContainer);
+        } else {
+            document.getElementById("log").value += "[" + timestamp() + "] " + message.message + "\n";
+        }
+    };
+
+    ws.onopen = async function () {
         console.log("WebSocket connection established");
-        console.log(code)
+        console.log(code);
 
-        // Delay fetching active chat rooms by 1 second
-        setTimeout(async () => {
-            const activeChatRoomsContainer = document.getElementById('activeChatRooms');
-            const apiEndpoint = 'http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeRooms';
-            fetchActiveChatRooms(apiEndpoint, activeChatRoomsContainer);
-            try {
-                const response = await fetch("http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeUsers/"+code);
-                const data = await response.text();
-                //console.log(data);
-                //Remove first and last character (square brackets)
-                let user = document.getElementById("small-rectangular-box")
-                for (let i = 0; i < data.length; i++) {
-                    //Get the div for small-rectangular-box and add the data to it
-                    user.innerHTML = data[i];
-                    users.appendChild(user);
+        updateActiveUsersList(code);
+    };
+}
 
-                }
-            } catch (error) {
-                console.error('Error fetching active users:', error);
-            }
+async function updateActiveUsersList(code) {
+    try {
+        const response = await fetch("http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeUsers/" + code);
+        const data = await response.text();
+        const activeUsers = data.substring(1, data.length - 1).split(',').map(user => user.trim());
+        const filteredUsers = activeUsers.filter(user => user.length < 30);
+        const activeUsersContainer = document.querySelector('.small-rectangular-box');
+        activeUsersContainer.innerHTML = '';
 
-        }, 60);
+        filteredUsers.forEach(user => {
+            addUserToActiveUsersList(user);
+        });
+
+    } catch (error) {
+        console.error('Error fetching active users:', error);
     }
 }
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const activeChatRoomsContainer = document.getElementById('activeChatRooms');
@@ -110,4 +116,14 @@ window.onLoad = function getRooms() {
             }
         })
         .catch(error => console.log(error));
+}
+
+function addUserToActiveUsersList(username) {
+    setTimeout(async () => {
+        console.log(username + " added");
+        const activeUsersContainer = document.querySelector('.small-rectangular-box');
+        const userElement = document.createElement('div');
+        userElement.textContent = username;
+        activeUsersContainer.appendChild(userElement);
+    } , 500);
 }
