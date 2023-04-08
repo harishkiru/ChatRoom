@@ -1,29 +1,25 @@
 package com.example.webchatserver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import jakarta.websocket.Session;
 
-/**
- * This class represents the data you may need to store about a Chat room
- * You may add more method or attributes as needed
- * **/
+import java.util.*;
+
 public class ChatRoom {
     private String code;
 
-    //each user has an unique ID associate to their ws session and their username
-    private  Map<String, String> users = new HashMap<String, String>();
+    // each user has a unique ID associated with their WebSocket session and their username
+    private Map<String, String> users = new HashMap<String, String>();
+    private Set<Session> sessions = new HashSet<>();
 
-    // when created the chat room has at least one user
-    public ChatRoom(String code, String user){
+    // when created, the chat room has at least one user
+    public ChatRoom(String code, String user, Session session) {
         this.code = code;
-        users.put(code, user);
-
+        users.put(user, "");
 
         // When created, the user has not entered their username yet
-        this.users.put(user, "");
+        addUser(user, "", session);
     }
+
     public void setCode(String code) {
         this.code = code;
     }
@@ -36,45 +32,35 @@ public class ChatRoom {
         return users;
     }
 
-    public void addUser(String userID, String name){
+    public void addUser(String userID, String name, Session session) {
         users.put(userID, name);
+        sessions.add(session);
     }
 
-    public boolean inRoom(String userID){
+    public boolean inRoom(String userID) {
         return users.containsKey(userID);
     }
 
-    public boolean isEmpty() { return users.isEmpty(); }
-    /**
-     * This method will add the new userID to the room if not exists, or it will add a new userID,name pair
-     * **/
-    public void setUserName(String userID, String name) {
-        // update the name
-        if(users.containsKey(userID)){
-            users.remove(userID);
+    public boolean isEmpty() {
+        return users.isEmpty();
+    }
+
+    public void setUserName(String userID, String name, Session session) {
+        if (users.containsKey(userID)) {
+            // Update the user's name
             users.put(userID, name);
-        }else{ // add new user
-            users.put(userID, name);
+        } else {
+            // Add a new user with the given name
+            addUser(userID, name, session);
         }
     }
 
-    /**
-     * This method will remove a user from this room
-     * **/
-    public void removeUser(String userID){
-        if(users.containsKey(userID)){
-            users.remove(userID);
-        }
+
+    public void removeUser(String userID) {
+        users.remove(userID);
     }
 
-    //Get all the users in a chatroom
-    public List<String> getUsersInRoom() {
-        List<String> usersInRoom = new ArrayList<String>();
-        for (Map.Entry<String, String> entry : users.entrySet()) {
-            usersInRoom.add(entry.getValue());
-        }
-        return usersInRoom;
+    public Set<Session> getSessions() {
+        return sessions;
     }
-
-
 }

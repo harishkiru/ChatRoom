@@ -14,19 +14,26 @@ async function fetchActiveChatRooms(apiEndpoint, activeChatRoomsContainer) {
 
 
 function displayActiveChatRooms(chatRooms, activeChatRoomsContainer) {
-    if(chatRooms[0] === "") {
-        activeChatRoomsContainer.textContent = 'No active chat rooms.';
-    } else {
-        activeChatRoomsContainer.textContent = '';
-        const ul = document.createElement('ul');
-        chatRooms.forEach((room) => {
-            const li = document.createElement('li');
-            li.textContent = room;
-            ul.appendChild(li);
-        });
-        activeChatRoomsContainer.appendChild(ul);
-    }
+    console.log('Chat rooms before filtering:', chatRooms);
+
+    //Display all active chat rooms (No duplicates)
+    const uniqueChatRooms = [...new Set(chatRooms)];
+    console.log('Chat rooms after filtering:', uniqueChatRooms);
+
+    activeChatRoomsContainer.innerHTML = '';
+
+    uniqueChatRooms.forEach(room => {
+        addChatRoomToActiveChatRoomsList(room, activeChatRoomsContainer);
+    });
 }
+
+
+function addChatRoomToActiveChatRoomsList(room, ulElement) {
+    const li = document.createElement('li');
+    li.textContent = room;
+    ulElement.appendChild(li);
+}
+
 
 async function enterRoom() {
     let code = document.getElementById("code").value;
@@ -40,7 +47,7 @@ async function enterRoom() {
 
         if (message.type === "userJoin") {
             updateActiveUsersList(code);
-        }  else if (message.type === "roomEmpty") {
+        } else if (message.type === "roomEmpty") {
             // Handle roomEmpty event by updating the list of active chat rooms
             await fetchActiveChatRooms(apiEndpoint, activeChatRoomsContainer);
         } else {
@@ -52,7 +59,7 @@ async function enterRoom() {
         console.log("WebSocket connection established");
         console.log(code);
 
-        updateActiveUsersList(code);
+        await updateActiveUsersList(code);
     };
 }
 

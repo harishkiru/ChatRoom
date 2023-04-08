@@ -19,8 +19,7 @@ public class ChatServer {
 
     private static Map<String, String> roomHistoryList = new HashMap<String, String>();
     private static Map<String, ChatRoom> chatRooms = new HashMap<>();
-    public static List<String> activeChatRooms = new ArrayList<>(); // Moved to ChatServer
-
+    public static List<String> activeChatRooms = new ArrayList<>();
 
     @OnOpen
     public void open(@PathParam("roomID") String roomID, Session session) throws IOException, EncodeException {
@@ -50,22 +49,25 @@ public class ChatServer {
 
         session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server ): Welcome to the chat room. Please state your username to begin.\"}");
 
-        activeChatRooms.add(roomID); // Update the activeChatRooms in ChatServer
+        if (!activeChatRooms.contains(roomID)) {
+            activeChatRooms.add(roomID);
+        }
     }
+
 
     private ChatRoom getOrCreateChatRoom(String roomID, Session session) {
         ChatRoom chatRoom;
         if (chatRooms.containsKey(roomID)) {
             chatRoom = chatRooms.get(roomID);
         } else {
-            chatRoom = new ChatRoom(roomID, session.getId());
+            chatRoom = new ChatRoom(roomID, session.getId(), session);
             chatRooms.put(roomID, chatRoom);
         }
         return chatRoom;
     }
 
     private void addUserToChatRoom(ChatRoom chatRoom, Session session) {
-        chatRoom.addUser(session.getId(), "");
+        chatRoom.addUser(session.getId(), "", session);
     }
 
     private void sendChatHistory(String history, Session session, String roomID) throws IOException, EncodeException {
@@ -88,24 +90,26 @@ public class ChatServer {
             chatRoom.removeUser(userId);
 
 
-            System.out.println(chatRoom.isEmpty() + " EMPTY LOL" + chatRoom.getUsers() + " USERS");
+            System.out.println(chatRoom.isEmpty() + " EMPTY");
+            System.out.println(chatRoom.getSessions().size() + " SIZE");
+            System.out.println(chatRoom.getUsers().size() + " USERS");
+            System.out.println(chatRoom.getUsers().get(userId) + " USERNAME");
             if (chatRoom.isEmpty()) {
                 saveChatRoomHistory(roomID, roomHistoryList.get(roomID));
-                //remove the roomID from the activeChatRooms list
                 activeChatRooms.remove(roomID);
-                System.out.println(activeChatRooms + " ACTIVE CHAT ROOMS");
             }
 
             updateRoomHistory(roomID, username + " left the chat room.");
             broadcastMessageToPeersInRoom(chatRoom, session, "(Server): " + username + " left the chat room.");
+
+            // Remove the session from the chat room
+            chatRoom.getSessions().remove(session);
         }
     }
-
 
     private ChatRoom findChatRoomByUserId(String userId) {
         for (ChatRoom chatRoom : chatRooms.values()) {
             if (chatRoom.inRoom(userId)) {
-                System.out.println(chatRoom.getRoomID() + " TGHIS IS THE CHAT ROOM ID");
                 return chatRoom;
             }
         }
@@ -164,7 +168,7 @@ public class ChatServer {
     }
 
     private void handleUsernameMessage(ChatRoom chatRoom, Session session, String userID, String message) throws IOException, EncodeException {
-        chatRoom.setUserName(userID, message);
+        chatRoom.setUserName(userID, message, session);
 
         session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server ): Welcome, " + message + "!\"}");
 
@@ -178,12 +182,12 @@ public class ChatServer {
         List<String> usernames = new ArrayList<>();
         ChatRoom chatRoom = chatRooms.get(roomID);
         for (String userID : chatRoom.getUsers().keySet()) {
-            //Dont put UUID in the list
+            // Don't put UUID in the list
             if (chatRoom.getUsers().get(userID).length() > 25) {
                 continue;
             }
             usernames.add(chatRoom.getUsers().get(userID));
-            System.out.println(chatRoom.getUsers().get(userID) + " THIS IS THE USERNAME");
+            System.out.println(chatRoom.getUsers().get(userID) + " THIS IS THE USERNAME" + chatRoom.getUsers().keySet() + " THIS IS THE KEYSET");
         }
         return usernames;
     }
