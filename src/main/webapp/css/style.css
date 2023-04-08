@@ -143,17 +143,27 @@ img {
 }
 
 .small-rectangular-box {
-    width: 150px;
+    width: 250px;
     height: 100px;
     background-color: #613659;
     color: white;
     margin-left: 10px;
     border-radius: 5px;
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: 350px; /* Adjust the top value to move it down more */
+    left: 120px; /* Adjust the left value to move it a little to the right */
     z-index: 1;
 }
+
+/* Center activeTitle header in the div */
+.activeTitle {
+    text-align: center;
+    font-size: 32px;
+    color: #C197d2;
+    position: absolute;
+    left: 25px;
+}
+
 
 #input:focus {
     box-shadow: 0px 0px 10px rgba(29, 161, 242, 0.5);
@@ -200,7 +210,8 @@ img {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 10px;
+    margin-top: 45%;
+    margin-left: 37%;
 }
 
 #reloadButton:hover {
