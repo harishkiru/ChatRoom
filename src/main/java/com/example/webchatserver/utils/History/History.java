@@ -27,7 +27,7 @@ public class History {
          TODO: read contents from the roomID.json file and return it
          loading the resource directory
         */
-        //String path = "E:\\Desktop\\Assignment2\\kirubaharan-ali-patel-csci2020u-assignment02\\src\\main\\resources\\chatHistory";
+        //main path (only works on windows) the other one is for harish who codes on mac
         File mainDirectory = new File(getClass().getClassLoader().getResource("chatHistory").getFile());
         String path = mainDirectory.getAbsolutePath();
         //String path = "/Users/harish/Documents/CSCI2020U/Assignment2/kirubaharan-ali-patel-csci2020u-assignment02/src/main/resources/chatHistory";
@@ -39,24 +39,32 @@ public class History {
 
         // loading the file content into history
         try {
+            // read the file
             history = FileReaderWriter.readHistoryFile(mainDir, roomID+".json");
         } catch (FileNotFoundException e) {
+            // if file not found, throw an exception
             throw new RuntimeException(e);
         }
 
         //build the json data for the response
+        // create a json object
         JSONObject mapper = new JSONObject();
+        // add the roomID to the json object
         mapper.put("room", roomID);
         if(history!=null){
+            // add the history to the json object
             mapper.put("log", history);
         }else{
+            // error if room not found
             mapper.put("ERROR KEKW HAHAH LOL", "Room not found");
         }
 
         // build the Response object sending json data in the entity
-        Response myResp = Response.status(200) // success
+        // success
+        Response myResp = Response.status(200)
                 .header("Content-Type", "application/json")
-                .entity(mapper.toString()) // adding the json data
+                // adding the json data
+                .entity(mapper.toString())
                 .build();
         return myResp;
     }
@@ -74,26 +82,30 @@ public class History {
         // parse the consumed json data
         //System.out.println(content + "OOO OOO AAAH AAAH");
         JSONObject mapper = new JSONObject(content);
+        // convert the json data to a map
         Map<String,Object> result = mapper.toMap();
+        // get the roomID from the map
         String filename = (String) result.get("room");
 
         // loading the resource directory
         //String file = "/Users/harish/Documents/CSCI2020U/Assignment2/kirubaharan-ali-patel-csci2020u-assignment02/src/main/resources/chatHistory";
-        //String file = "E:\\Desktop\\Assignment2\\kirubaharan-ali-patel-csci2020u-assignment02\\src\\main\\resources\\chatHistory";
+        //main path (only works on windows) the other one is for harish who codes on mac
         File mainDirectory = new File(getClass().getClassLoader().getResource("chatHistory").getFile());
         String file = mainDirectory.getAbsolutePath();
 
 
 
         File data = null;
-        //System.out.println(file);
+        // create a file object
         data = new File(file);
+
 
         try {
             // saving the chat log history to the roomID.json file in the resources folder
             //get("log")
             FileReaderWriter.saveNewFile(data, filename+".json", (String) result.get("log"));
         } catch (FileNotFoundException e) {
+            // if file not found, throw an exception
             throw new RuntimeException(e);
         }
 

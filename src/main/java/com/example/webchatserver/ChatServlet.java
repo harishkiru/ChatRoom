@@ -16,6 +16,8 @@ public class ChatServlet extends HttpServlet {
     private String message;
 
     //static so this set is unique
+    // set of rooms
+
     public static Set<String> rooms = new HashSet<>();
 
 
@@ -24,21 +26,27 @@ public class ChatServlet extends HttpServlet {
      * Method generates unique room codes
      * **/
     public static String generatingRandomUpperAlphanumericString(int length) {
+        // generating random string
         String generatedString = RandomStringUtils.randomAlphanumeric(length).toUpperCase();
         // generating unique room code
         while (rooms.contains(generatedString)){
+            // generating random string
             generatedString = RandomStringUtils.randomAlphanumeric(length).toUpperCase();
         }
+        // adding the room to the set
         rooms.add(generatedString);
-
+// returning the room code
         return generatedString;
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // setting the content type to plain text
         response.setContentType("text/plain");
 
         // send the random code as the response's content
+        // creating a print writer
         PrintWriter out = response.getWriter();
+        // printing the random code
         out.println(generatingRandomUpperAlphanumericString(5));
 
     }
