@@ -34,10 +34,12 @@ img {
     background-color: #d3b1c2;
     color: white;
     border-radius: 10px;
+    border: 3px solid green;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     width: 80%;
-    max-width: 500px;
+    max-width: 390px;
     position: absolute;
+    top: 35px;
     left: 50px;
     height: 150px;
     overflow-y: auto;
@@ -76,17 +78,17 @@ img {
 
 .JoinButton {
     position: absolute;
-    right: 45px;
+    left: 350px;
     top: 90px;
 }
 
 #room {
-    display: flex;
+    position: absolute;
+    width: 100%;
+    top: 10%;
     justify-content: center;
     align-items: center;
-    height: 50vh;
-    margin-top: 0px;
-    flex-direction: column;
+    height: 200px;
 }
 
 #code {
@@ -124,7 +126,7 @@ img {
     background-color: #d3b1c2;
     color: #333;
     width: 100%;
-    height: 600px;
+    height: 90%;
     overflow: auto;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     scrollbar-width: thin;
@@ -152,16 +154,15 @@ img {
     border-radius: 50px;
     margin-right: 70%;
     width: 100%;
-    max-width: 900px;
     outline: none;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     position: absolute;
-    top: 600px;
+    top: 90%;
     left: 0px;
 }
 
 .small-rectangular-box {
-    position: relative; /* Add this line to make the small-rectangular-box a positioning context */
+    position: absolute; /* Add this line to make the small-rectangular-box a positioning context */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -172,7 +173,7 @@ img {
     margin-left: 10px;
     border-radius: 5px;
     position: absolute;
-    top: 475px;
+    top: 35px;
     left: 75px;
     z-index: 1;
 }
@@ -233,8 +234,9 @@ img {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 45%;
-    margin-left: 57%;
+    position: absolute;
+    left: 290px;
+    top: 00px
 }
 
 #reloadButton:hover {
@@ -286,16 +288,15 @@ div.absolute {
     position: absolute;
     top: 70px; /* Adjust the top value to accommodate the navbar */
     left: 0px;
-    width: 900px;
-    height: 800px;
+    width: 60%;
+    height: 100%;
 }
 
 div.firstAbsolute {
     position: absolute;
-    top: 70px; /* Adjust the top value to accommodate the navbar */
-    left: 900px;
-    width: 450px;
-    height: 300px;
+    left : 60%;
+    width: 40%;
+    height: 100%;
 }
 
 .header-and-users {
@@ -314,11 +315,31 @@ div.firstAbsolute {
 
 .openChats {
     position: absolute; /* Change the position to absolute */
-    top: 205px; /* Adjust the top value to move it up */
-    left: 34%; /* Move it to the center horizontally */
-    transform: translateX(-50%); /* Shift it left by half of its width to center it */
+     /* Adjust the top value to move it up */
+     /* Move it to the center horizontally */
+     /* Shift it left by half of its width to center it */
     margin-bottom: 8px;
     font-size: 24px;
     color: #C197d2;
-    z-index: 2; /* Add z-index to place it above the small-rectangular-box */
+    z-index: 2;
+    left: 90px;
+    top: 0px;/* Add z-index to place it above the small-rectangular-box */
+}
+
+.cr{
+    position: absolute;
+    width: 100%;
+    top: 40%;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+.AU{
+    position: absolute;
+    width: 100%;
+    top: 70%;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+
 }
