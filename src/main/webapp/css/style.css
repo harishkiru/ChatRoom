@@ -28,8 +28,8 @@ img {
 #activeChatRooms {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start; /* Add this line to align items to the top */
+    align-items: center; /* Update this line to align items to the left */
     padding: 20px;
     background-color: #d3b1c2;
     color: white;
@@ -39,7 +39,25 @@ img {
     max-width: 500px;
     position: absolute;
     left: 50px;
-    top: 150px;
+    height: 150px;
+    overflow-y: auto;
+}
+
+/* Style the scrollbar */
+#activeChatRooms::-webkit-scrollbar {
+    width: 8px;
+}
+
+#activeChatRooms::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Show the scrollbar with full opacity when the user hovers over the div */
+#activeChatRooms:hover::-webkit-scrollbar-thumb {
+    opacity: 1;
 }
 
 .JCR {
@@ -143,27 +161,32 @@ img {
 }
 
 .small-rectangular-box {
-    width: 250px;
+    position: relative; /* Add this line to make the small-rectangular-box a positioning context */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
     height: 100px;
     background-color: #613659;
     color: white;
     margin-left: 10px;
     border-radius: 5px;
     position: absolute;
-    top: 350px; /* Adjust the top value to move it down more */
-    left: 120px; /* Adjust the left value to move it a little to the right */
+    top: 475px;
+    left: 75px;
     z-index: 1;
 }
 
-/* Center activeTitle header in the div */
 .activeTitle {
-    text-align: center;
-    font-size: 32px;
+    position: absolute; /* Change the position to absolute */
+    top: -30px; /* Adjust the top value to move it up */
+    left: 50%; /* Move it to the center horizontally */
+    transform: translateX(-50%); /* Shift it left by half of its width to center it */
+    margin-bottom: 8px;
+    font-size: 24px;
     color: #C197d2;
-    position: absolute;
-    left: 25px;
+    z-index: 2; /* Add z-index to place it above the small-rectangular-box */
 }
-
 
 #input:focus {
     box-shadow: 0px 0px 10px rgba(29, 161, 242, 0.5);
@@ -211,7 +234,7 @@ img {
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-top: 45%;
-    margin-left: 37%;
+    margin-left: 57%;
 }
 
 #reloadButton:hover {
@@ -275,3 +298,27 @@ div.firstAbsolute {
     height: 300px;
 }
 
+.header-and-users {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.user {
+    padding: 1px;
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+}
+
+.openChats {
+    position: absolute; /* Change the position to absolute */
+    top: 205px; /* Adjust the top value to move it up */
+    left: 34%; /* Move it to the center horizontally */
+    transform: translateX(-50%); /* Shift it left by half of its width to center it */
+    margin-bottom: 8px;
+    font-size: 24px;
+    color: #C197d2;
+    z-index: 2; /* Add z-index to place it above the small-rectangular-box */
+}

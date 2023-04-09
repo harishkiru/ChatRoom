@@ -9,13 +9,13 @@
 <body>
 <nav id="navbar">
     <ul>
-        <li><a href="#">Home</a></li>
+        <li><a href="#">Chat</a></li>
         <li><a href="#">About</a></li>
-        <li><a href="#">Contact</a></li>
     </ul>
 </nav>
 <img/>
 <div class="firstAbsolute">
+    <h1 class="openChats">Open Chatrooms</h1>
     <button id="reloadButton" onclick="reloadRooms()">Reload Chatrooms</button>
     <div id="activeChatRooms"></div>
     <div id="users"></div>
@@ -24,8 +24,12 @@
         <input class="moveToRight" type="text" id="code" placeholder="Enter Room Code"/>
         <button class="JoinButton" id="btRoom" onclick="enterRoom()">Join</button>
     </div>
+
     <div id="userBox" class="small-rectangular-box">
-        <h1 class="activeTitle">Active Users</h1>
+        <div class="header-and-users">
+            <h1 class="activeTitle">Active Users</h1>
+            <div id="activeUsers"></div>
+        </div>
     </div>
 </div>
 <div id="chatDiv" class="absolute">

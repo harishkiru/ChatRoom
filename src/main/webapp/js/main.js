@@ -12,7 +12,6 @@ async function fetchActiveChatRooms(apiEndpoint, activeChatRoomsContainer) {
     }
 }
 
-
 function displayActiveChatRooms(chatRooms, activeChatRoomsContainer) {
     console.log('Chat rooms before filtering:', chatRooms);
 
@@ -46,8 +45,8 @@ async function enterRoom() {
         console.log("Message received: " + message.type);
 
         if (message.type === "userJoin" || message.type === "userLeave") {
-            updateActiveUsersList(code);
-            updateActiveRoomsList();
+            await updateActiveUsersList(code);
+            await updateActiveRoomsList();
         } else if (message.type === "roomEmpty") {
             // Handle roomEmpty event by updating the list of active chat rooms
 
@@ -64,25 +63,6 @@ async function enterRoom() {
         await updateActiveUsersList(code);
     };
 }
-
-async function updateActiveUsersList(code) {
-    try {
-        const response = await fetch("http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeUsers/" + code);
-        const data = await response.text();
-        const activeUsers = data.substring(1, data.length - 1).split(',').map(user => user.trim());
-        const filteredUsers = activeUsers.filter(user => user.length < 30);
-        const activeUsersContainer = document.querySelector('.small-rectangular-box');
-        activeUsersContainer.innerHTML = '';
-
-        filteredUsers.forEach(user => {
-            addUserToActiveUsersList(user);
-        });
-
-    } catch (error) {
-        console.error('Error fetching active users:', error);
-    }
-}
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -119,13 +99,32 @@ function addUserToActiveUsersList(username) {
         if(username === "Arial") {
             console.log("Arial is not a user");
         } else {
-            const activeUsersContainer = document.querySelector('.small-rectangular-box');
+            const activeUsersContainer = document.getElementById('activeUsers'); // Change this line
             const userElement = document.createElement('div');
             userElement.textContent = username;
+            userElement.classList.add('user'); // Add this line to style individual users
             activeUsersContainer.appendChild(userElement);
         }
 
     } , 500);
+}
+
+async function updateActiveUsersList(code) {
+    try {
+        const response = await fetch("http://localhost:8080/WSChatServer-1.0-SNAPSHOT/api/endpoints/activeUsers/" + code);
+        const data = await response.text();
+        const activeUsers = data.substring(1, data.length - 1).split(',').map(user => user.trim());
+        const filteredUsers = activeUsers.filter(user => user.length < 30);
+        const activeUsersContainer = document.getElementById('activeUsers'); // Change this line
+        activeUsersContainer.innerHTML = '';
+
+        filteredUsers.forEach(user => {
+            addUserToActiveUsersList(user);
+        });
+
+    } catch (error) {
+        console.error('Error fetching active users:', error);
+    }
 }
 
 async function updateActiveRoomsList() {
