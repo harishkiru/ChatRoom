@@ -106,7 +106,7 @@ public class ChatServer {
                 chatRooms.remove(chatRoom.getRoomID()); // Remove the chat room from the map
             }
 
-            updateRoomHistory(roomName, username + " left the chat room.");
+            updateRoomHistory(roomName, username + " left the chat room.~S~");
             goodbyeBroadcast(chatRoom, session, "(Server): " + username + " left the chat room.");
 
             // Remove the session from the chat room
@@ -140,7 +140,11 @@ public class ChatServer {
     private void welcomeBroadcast(ChatRoom chatRoom, Session session, String message) throws IOException, EncodeException {
         for (Session peer : session.getOpenSessions()) {
             if (chatRoom.inRoom(peer.getId())) {
+                System.out.println("Sending welcome message to " + peer.getId());
                 peer.getBasicRemote().sendText("{\"type\": \"userJoin\", \"message\":\"" + message + "\"}");
+                if(!peer.getId().equals(session.getId())) {
+                    peer.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"" + message + "\"}");
+                }
             }
         }
     }
@@ -149,6 +153,7 @@ public class ChatServer {
         for (Session peer : session.getOpenSessions()) {
             if (chatRoom.inRoom(peer.getId())) {
                 peer.getBasicRemote().sendText("{\"type\": \"userLeave\", \"message\":\"" + message + "\"}");
+                peer.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"" + message + "\"}");
             }
         }
     }
@@ -189,7 +194,7 @@ public class ChatServer {
         session.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"(Server ): Welcome, " + message + "!\"}");
 
         String roomName = chatRoom.getRoomName();
-        updateRoomHistory(roomName, message + " joined the chat room.");
+        updateRoomHistory(roomName, message + " joined the chat room.~S~");
         welcomeBroadcast(chatRoom, session, "(Server): " + message + " joined the chat room.");
     }
 
