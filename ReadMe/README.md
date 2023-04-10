@@ -1,28 +1,30 @@
-(a). This is a chat server that allows users to create chat rooms and chat with other users in real time.
-The server is written in Java. The server uses WebSockets to communicate with the client. 
-The client is written in JavaScript and uses the WebSockets to communicate with the server.
-![alt text](1.png)
-![alt text](2.png)
-(b). The improvements that were made to the server are as follows:
+# Chat Server
+
+This is a chat server that allows users to create chat rooms and chat with other users in real time. The server is written in Java and uses WebSockets to communicate with the client. The client is written in JavaScript and uses the WebSockets to communicate with the server.
+
+![Chat room interface](1.png)
+![Chat room list](2.png)
+
+## Improvements
+The following improvements were made to the server:
 1. The server now supports multiple chat rooms.
-2. The server now supports multiple users in a chat room.
-3. Readability on the client side using css.
-4. The layout of the chat room is now more user friendly.
-5. The color scheme makes it easy on the eyes.
-6. the navigatabliity of the chat/about room is more user friendly.
-7. The client side supports different resolutions.
+2. The server now allows user to set names for their chatrooms.
+3. The server now supports multiple users in a chat room.
+4. The server now lists every user in the chatroom and updates in real-time.
+5. Improved readability on the client side using CSS.
+6. The layout of the chat room is now more user friendly.
+7. The color scheme is easy on the eyes.
+8. Improved navigatability of the chat/about room.
+9. The client side supports different resolutions.
 
-(c). Steps to run the server:
-1. get repository from github cloned
-2. open the project and download dependencies
-3. setup glassfish server
-4. change the history file path in the server
-5. run the server
-6. open the client in a browser
-7. enter room code and username
-8. chat away
+## Steps to run the server
+1. Clone the repository from GitHub.
+2. Open the project and download dependencies.
+3. Set up the GlassFish server.
+5. Run the server.
+6. Open the client in a browser.
+7. Enter room code and username.
+8. Start chatting!
 
-(d). resources used outside of assigned:
+## Resources used outside of assigned
 1. jakarta.ws.rs.api
-2. guicedee.services.jakarta.ws.rs.api
-through maven
