@@ -185,6 +185,7 @@ public class ChatServer {
                 peer.getBasicRemote().sendText("{\"type\": \"userLeave\", \"message\":\"" + message + "\"}");
                 // send the message to the user
                 peer.getBasicRemote().sendText("{\"type\": \"chat\", \"message\":\"" + message + "\"}");
+                //ASdasdnhbkjhashbndbkjsad
             }
         }
     }
