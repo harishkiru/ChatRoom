@@ -1,38 +1,36 @@
-`# Assignment 02 - Web Chat Server (Instructions)
-> Course: CSCI 2020U: Software Systems Development and Integration
+# 🌟 Chat Room Universe: A Seamless Multi-Room Chat Experience 🌌
 
-This is the template for your Assignment 02.
+Welcome to the Chat Room Universe! This is not just another chat website; it's a vibrant, dynamic space where conversations never sleep, and every chat room is a new adventure. 🚀
 
-## Overview
-You want to create a web chat server with multiple rooms. This will allow you and your friends to chat privately.
+## 🎉 What Makes Us Special?
 
-- Check the `Canvas/Assingments/Assignment 02` for more the detailed instructions.
+Our chat rooms are a bustling hub of live interactions across multiple chat rooms, Here’s what you can expect:
 
-### WebChatServer - Endpoints
+- **👥 Multi-Room Madness**: Dive into diverse chat rooms, each with its unique vibe and community. Feel free to hop around!
+- **⚡ Real-Time Revelations**: Our real-time data relay technology ensures you’re always in the loop, experiencing live interactions as they happen.
+- **📜 Eternal Echoes**: We value your words. That's why our persistent chat history lets you relive those memorable conversations anytime.
 
-**Connect to the websocket**
+## 🚀 Get Started on Your Chat Adventure
 
-From the `ChatServer` class. This will create a new client connect to the web server. The server and client communicate using `json` messages.
-- `ws://localhost:8080/WSChatServer-1.0-SNAPSHOT/ws/{roomID}`
+Here's how you can join our universe:
 
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/harishkiru/ChatRoom.git
 
-**GET a new (unique) room code**
+2. **Navigate to the Folder**
+    ```bash
+    cd ChatRoom
 
-From the `ChatServlet` class. This will return a `text/plain` content type.
-- `http://localhost:8080/WSChatServer-1.0-SNAPSHOT/chat-servlet`
-See a sample of the response data:
-```
-1B9FN
-```
-
-### WebChatServer - client
-
-Your client is in the `webapp` folder, when started the application will run at `http://localhost:8080/WSChatServer-1.0-SNAPSHOT/`; which will load the `index.html` file.
-
-Your client-side code will be in the `js/main.js` javascript file.
-
-> Obs. Feel free to create other helper classes as you see fit.
-> 
+3. Open the cloned repository in your preferred IDE.
 
 
+4. In your IDE, navigate to `Settings > Build and Performance > Debugger` and set the desired port.
+
+
+5. Set up Glassfish configuration by specifying the URL, domains, and initiating artifacts.
+   Run the Glassfish configuration on the project file.
+
+
+6. After the Glassfish server launches, navigate to the HTML file and open it in your preferred web browser.
 
