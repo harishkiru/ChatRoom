@@ -34,3 +34,5 @@ Here's how you can join our universe:
 
 6. After the Glassfish server launches, navigate to the HTML file and open it in your preferred web browser.
 
+![This is what the webite looks like.](http://mcgodftw.dev/i/omywoirc.png "Website")
+![This is what the webite looks like.](http://mcgodftw.dev/i/7qizqmbl.png "Website")
